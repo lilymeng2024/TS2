@@ -70,6 +70,13 @@ var jsPsychSurveyMultiSelect = (function (jspsych) {
         type: jspsych.ParameterType.STRING,
         default: "Continue"
       },
+      /**modeified, not in original plugin. */
+      trial_duration:{
+        type:jspsych.ParameterType.INT,
+        pretty_name:'Trial duration',
+        default:null,
+        description:'How long to show trial before it ends'
+      },
       /** 'You must choose at least one response for this question' | Message to display if required response is not given. */
       required_message: {
         type: jspsych.ParameterType.STRING,
@@ -178,7 +185,15 @@ var jsPsychSurveyMultiSelect = (function (jspsych) {
         }
         trial_form.reportValidity();
       });
+      /*end trial if trial duration is set*/
+      let timeoutID;
+      if(trial.trial_duration !== null){
+        jsPsych.pluginAPI.setTimeout(() => {
+          trial_form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+        },trial.trial_duration);
+      }
       trial_form.addEventListener("submit", (event) => {
+        if(timeoutID){ this.jsPsych.pluginAPI.clearAllTimeouts(); }
         event.preventDefault();
         var endTime = performance.now();
         var response_time = Math.round(endTime - startTime);
