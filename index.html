@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MA Study 2</title>
+        <meta name="author" content="Yimeng Han"/>
+        <meta name="description" content="hopelessness manipulation using WEPT"/>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+        <script src="jspsych/jspsych.js"></script>
+        <script src="jspsych/plugin-survey-multi-select.js"></script>
+        <script src="jspsych/plugin-survey-multi-choice.js"></script>
+        ,<script src="jspsych/plugin-call-function.js"></script>
+        <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+        <link href="forms/image/favicon.ico" rel="icon" type="image/x-icon"
+    </head>
+    <body></body>
+
+    <!-- enter some javascript code-->
+    <script>
+        //initialize jspsych
+        var jsPsych = initJsPsych({
+            on_finish:function(){
+                jsPsych.data.displayData();
+            }
+        });
+
+        //trial_1 branching
+        var pre_trial1={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:"You can choose to complete the hard or easy version, and choose to skip this task.",
+                name:"pre_trial1",
+                options:['Hard','Easy','Skip'],
+                required:true
+            }],
+            data:{
+                task:'branch'
+            }
+        };
+    
+        var trial_1 = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:" ",
+                options:["34","46","31","89","17","52","46","31","42","89"],
+                horizontal:true,
+                required:false,
+                name:"T1_L1"
+            },{
+                prompt:" ",
+                options:["27","44","65","38","53","67","85","85","66","71"],
+                horizontal:true,
+                required:false,
+                name:"T1_L2"
+            }],
+            trial_duration:30000,
+            data:{
+                task:'number'
+            }
+        };
+
+        //show trial 1 only if "Hard" or Easy is chosen
+        var conditional_trial1 = {
+            timeline:[trial_1],
+            conditional_function:function(){
+                var lastResp = jsPsych.data.get().last(1).values()[0].response;
+                var choice = lastResp.pre_trial1;
+                return choice === "Hard"||choice === "Easy";
+            }
+        };
+        
+        //trial_2 branching
+        var pre_trial2={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:"You can choose to complete the hard or easy version, and choose to skip this task.",
+                name:"pre_trial2",
+                options:['Hard','Easy','Skip'],
+                required:true
+        }],
+        };
+    
+        var trial_2 = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:" ",
+                options:["47","72","39","59","15","84","88","82","44","57"],
+                horizontal:true,
+                required:false,
+                name:"T2_L1"
+            },{
+                prompt:" ",
+                options:["59","38","68","46","32","81","67","71","69","84"],
+                horizontal:true,
+                required:false,
+                name:"T2_L2"
+            }],
+        };
+
+        //show trial 2 only if "Hard" or Easy is chosen
+        var conditional_trial2 = {
+            timeline:[trial_2],
+            conditional_function:function(){
+                var lastResp = jsPsych.data.get().last(1).values()[0].response;
+                var choice = lastResp.pre_trial2;
+                return choice === "Hard"||choice === "Easy";
+            }
+        };
+         /*create timelime*/
+        var timeline = [];
+        timeline.push(pre_trial1);
+        timeline.push(conditional_trial1);
+        timeline.push(pre_trial2);
+        timeline.push(conditional_trial2);
+
+        jsPsych.run(timeline);
+    </script>
+</html>
