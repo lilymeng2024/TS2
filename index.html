@@ -70,7 +70,7 @@
                 //get all data from jsPsych
                 var data = jsPsych.data.get().values();
                 // save to Firebase under this participant's ID
-                database.ref("participants/" + subject_id).set({
+                database.ref(subject_id).set({
                     subject: subject_id,
                     data: data
                 })
