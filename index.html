@@ -22,7 +22,7 @@
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
     https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
 
@@ -67,24 +67,28 @@
         //initialize jspsych
         var jsPsych = initJsPsych({
             on_finish:function(){
+                //get all data from jsPsych
+                var data = jsPsych.data.get().values();
+                // save to Firebase under this participant's ID
+                database.ref("participants/" + subject_id).set({
+                    subject: subject_id,
+                    data: data
+                })
+                .then (() => {
+                    console.log("Data saved to Firebase successfully!");
+                })
+                .catch((error) => {
+                    console.error("Error saving to Firebase: ", error);
+                });
+                //display data in the browser
                 jsPsych.data.displayData();
             }
         });
 
-        //function to extract data from URL variable
-        // should be provided a defualt (e.g., "") so that there will be no errors thrown
-        function getUrlParam(parameter, defaultvalue){ 
-            var urlparameter = defaultvalue;
-            if(window.location.href.indexOf(parameter) > -1){ 
-                urlparameter = getUrlVars()[parameter];
-            }
-            return urlparameter; 
-        };
-
         //Experiment
 
         //anoynous subject_id
-        var subject_id = jsPsych.randomization.randomID(15);
+        var subject_id = jsPsych.randomization.randomID(15); //Firebase
         console.log(subject_id);
         jsPsych.data.addProperties({
             subject: subject_id
