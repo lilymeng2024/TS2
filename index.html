@@ -69,10 +69,12 @@
             on_finish:function(){
                 //get all data from jsPsych
                 var data = jsPsych.data.get().values();
-                // save to Firebase under this participant's ID
-                database.ref(subject_id).set({
+                //use push, entries are ordered by time
+                database.ref("participants").push({
                     subject: subject_id,
-                    data: data
+                    data: data,
+                    //add timestamp 
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
                 })
                 .then (() => {
                     console.log("Data saved to Firebase successfully!");
@@ -98,7 +100,8 @@
         //preload
         var preload={
             type:jsPsychPreload,
-            images:['forms/image/matrix.png']
+            images:['forms/image/matrix.png'],
+            record_data:false
         };
 
         //Intro
