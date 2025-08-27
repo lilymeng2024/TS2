@@ -16,8 +16,54 @@
     </head>
     <body></body>
 
+    <!-- Allow remote storage on Google Firebase -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+    https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
+
     <!-- enter some javascript code-->
-    <script>
+    <script type="text/javascript">
+
+        //Firebase set up
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZtwVff-8QiFqQkvB6WSI3S0924DHPcyw",
+            authDomain: "ma-thesis-2.firebaseapp.com",
+            databaseURL: "https://ma-thesis-2-default-rtdb.firebaseio.com",
+            projectId: "ma-thesis-2",
+            storageBucket: "ma-thesis-2.firebasestorage.app",
+            messagingSenderId: "613972728144",
+            appId: "1:613972728144:web:51acc785ef4ce3900ff455"
+        };
+
+        //initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        //get a reference to the database service
+        var database = firebase.database();
+
+        //login anonynous user
+        firebase.auth().signInAnonymously().catch(function(error) {
+            //error handling
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        });
+
+        // check user can sign on to firebase
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // user is signed in
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+            } else {
+                //user is signed out
+            }
+        });
+
         //initialize jspsych
         var jsPsych = initJsPsych({
             on_finish:function(){
@@ -25,6 +71,26 @@
             }
         });
 
+        //function to extract data from URL variable
+        // should be provided a defualt (e.g., "") so that there will be no errors thrown
+        function getUrlParam(parameter, defaultvalue){ 
+            var urlparameter = defaultvalue;
+            if(window.location.href.indexOf(parameter) > -1){ 
+                urlparameter = getUrlVars()[parameter];
+            }
+            return urlparameter; 
+        };
+
+        //Experiment
+
+        //anoynous subject_id
+        var subject_id = jsPsych.randomization.randomID(15);
+        console.log(subject_id);
+        jsPsych.data.addProperties({
+            subject: subject_id
+        });
+
+        //Study procedure begins
         //preload
         var preload={
             type:jsPsychPreload,
@@ -71,25 +137,24 @@
             }
         };
 
-        //trial_1 branching
+        //trial_1
         var pre_trial1={
             type:jsPsychSurveyMultiChoice,
             questions:[{
                 prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>1st</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing 'Skip'.</p>
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
                 Please choose to complete the hard version or easy version, or skip`,
                 name:"pre_trial1",
                 options:['Hard version','Easy version','Skip'],
                 required:true
             }],
         };
-        
-        //trial 1H
+
         var trial_1H = {
             type:jsPsychSurveyMultiSelect,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
                 For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
                 options:["34","46","31","89","17","52","46","31","42","89"],
@@ -106,13 +171,12 @@
             trial_duration:30000,
         };
 
-        //trial 1E
         var trial_1E = {
             type:jsPsychSurveyMultiSelect,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
-                    You chose the easy version. Identify all those stimuli with an odd second digit. 
-                    For example, you should click on "25", because the second digit is odd (5). `,
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                    <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                    For example, you should click on "25", because the second digit is odd (5). </p>`,
                 options:["34","46","31","89","17","52","46","31","42","89"],
                 horizontal:true,
                 required:false,
@@ -127,11 +191,10 @@
             trial_duration:30000,
         };
 
-        //show trial 1H only if "Hard" is chosen
         var conditional_trial1H = {
             timeline:[trial_1H],
             conditional_function:function(){
-                var lastResp = jsPsych.data.get()
+                var choice = jsPsych.data.get()
                     .select('response')
                     .values.map(r => r.pre_trial1)
                     .filter(v => v!== undefined)
@@ -140,35 +203,38 @@
             }
         };
 
-         //show trial 1E only if "Easy" is chosen
         var conditional_trial1E = {
             timeline:[trial_1E],
             conditional_function:function(){
-                var lastResp = jsPsych.data.get()
+                var choice = jsPsych.data.get()
                 .select('response')
                 .values.map(r => r.pre_trial1)
                 .filter(v => v!== undefined)
                 .pop();
-                var choice = lastResp.pre_trial1;
                 return choice === "Easy version";
             }
         };
 
-        //trial_2 branching
+        //trial_2
         var pre_trial2={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:"You can choose to complete the hard or easy version, and choose to skip this task.",
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>2nd</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,
                 name:"pre_trial2",
-                options:['Hard','Easy','Skip'],
+                options:['Hard version','Easy version','Skip'],
                 required:true
         }],
         };
     
-        var trial_2 = {
+        var trial_2H = {
             type:jsPsychSurveyMultiSelect,
             questions:[{
-                prompt:" ",
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
                 options:["47","72","39","59","15","84","88","82","44","57"],
                 horizontal:true,
                 required:false,
@@ -182,16 +248,647 @@
             }],
             trial_duration:30000
         };
+        var trial_2E = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                    <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                    For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["47","72","39","59","15","84","88","82","44","57"],
+                horizontal:true,
+                required:false,
+                name:"T2E_L1"
+            },{
+                prompt:" ",
+                options:["59","38","68","46","32","81","67","71","69","84"],
+                horizontal:true,
+                required:false,
+                name:"T2E_L2"
+            }],
+            trial_duration:30000
+        };
 
-        //show trial 2 only if "Hard" or Easy is chosen
-        var conditional_trial2 = {
-            timeline:[trial_2],
+        var conditional_trial2H = {
+            timeline:[trial_2H],
             conditional_function:function(){
-                var lastResp = jsPsych.data.get().last(1).values()[0].response;
-                var choice = lastResp.pre_trial2;
-                return choice === "Hard"||choice === "Easy";
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial2)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
             }
         };
+
+        var conditional_trial2E = {
+            timeline:[trial_2E],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial2)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 3
+        var pre_trial3={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>3rd</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,
+                name:"pre_trial3",
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        
+        var trial_3H= {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
+                options:["43","72","46","38","68","36","39","83","22","24"],
+                horizontal:true,
+                required:false,
+                name:"T3H_L1"
+            },{
+                prompt:" ",
+                options:["25","85","28","46","46","32","34","72","58","68"],
+                horizontal:true,
+                required:false,
+                name:"T3H_L2"
+            }],
+            trial_duration:30000
+        };
+        var trial_3E= {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["47","72","39","59","15","84","88","82","44","57"],
+                options:["43","72","46","38","68","36","39","83","22","24"],
+                horizontal:true,
+                required:false,
+                name:"T3E_L1"
+            },{
+                prompt:" ",
+                options:["25","85","28","46","46","32","34","72","58","68"],
+                horizontal:true,
+                required:false,
+                name:"T3E_L2"
+            }],
+            trial_duration:30000
+        };
+
+        
+        var conditional_trial3H = {
+            timeline:[trial_3H],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial3)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        
+        var conditional_trial3E = {
+            timeline:[trial_3E],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial3)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        var pre_trial4={
+            type:jsPsychSurveyMultiChoice,
+             questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>4th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,
+                name:"pre_trial4",
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        trial_4H={
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
+                options:["48","21","68","13","19","63","24","27","22","63"],
+                horizontal:true,
+                required:false,
+                name:"T4H_L1"
+            },{
+                prompt:" ",
+                options:["18","88","37","73","39","66","43","27","93","22"],
+                horizontal:true,
+                required:false,
+                name:"T4H_L2"
+            }],
+            trial_duration:30000
+        };
+        trial_4E={
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["48","21","68","13","19","63","24","27","22","63"],
+                horizontal:true,
+                required:false,
+                name:"T4E_L1"
+            },{
+                prompt:" ",
+                options:["18","88","37","73","39","66","43","27","93","22"],
+                horizontal:true,
+                required:false,
+                name:"T4E_L2"
+            }],
+            trial_duration:30000
+        };
+        
+        var conditional_trial4H = {
+            timeline:[trial_4H],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial4)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial4E = {
+            timeline:[trial_4E],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial4)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial_5
+        var pre_trial5={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>5th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,
+                name:"pre_trial5",
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_5H = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
+                options:["64","15","82","83","58","98","96","23","69","12"],
+                horizontal:true,
+                required:false,
+                name:"T5H_L1" 
+            },{
+                prompt:" ",
+                options:["42","74","63","92","31","58","73","28","27","56"],
+                horizontal:true,
+                required:false,
+                name:"T5H_L2" 
+            }],
+            trial_duration:30000
+        };
+        var trial_5E = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["64","15","82","83","58","98","96","23","69","12"],
+                horizontal:true,
+                required:false,
+                name:"T5E_L1" 
+            },{
+                prompt:" ",
+                options:["42","74","63","92","31","58","73","28","27","56"],
+                horizontal:true,
+                required:false,
+                name:"T5E_L2"
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial5H = {
+            timeline:[trial_5H],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial5) 
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial5E = {
+            timeline:[trial_5E],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial5)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 6
+        var pre_trial6={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>6th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,
+                name:"pre_trial6", // change accordingly
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_6H = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
+                options:["62","84","46","13","38","28","45","34","41","68"],
+                horizontal:true,
+                required:false,
+                name:"T6H_L1" //change
+            },{
+                prompt:" ",
+                options:["43","25","54","75","61","63","56","31","19","63"],
+                horizontal:true,
+                required:false,
+                name:"T6H_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var trial_6E = {
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                    <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                    For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["62","84","46","13","38","28","45","34","41","68"],
+                horizontal:true,
+                required:false,
+                name:"T6E_L1" //change
+            },{
+                prompt:" ",
+                options:["43","25","54","75","61","63","56","31","19","63"],
+                horizontal:true,
+                required:false,
+                name:"T6E_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial6H = {
+            timeline:[trial_6H],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial6) //change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial6E = {
+            timeline:[trial_6E],
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial6)
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 7
+        var pre_trial7={//change
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>7th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,//change order
+                name:"pre_trial7", // change accordingly
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_7H = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
+                options:["38","87","29","81","26","32","14","16","52", "64"],
+                horizontal:true,
+                required:false,
+                name:"T7H_L1" //change
+            },{
+                prompt:" ",
+                options:["69","39","66","96","21","73","33","97","51","98"],
+                horizontal:true,
+                required:false,
+                name:"T7H_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var trial_7E = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["38","87","29","81","26","32","14","16","52", "64"],
+                horizontal:true,
+                required:false,
+                name:"T7E_L1" //change
+            },{
+                prompt:" ",
+                options:["69","39","66","96","21","73","33","97","51","98"],
+                horizontal:true,
+                required:false,
+                name:"T7E_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial7H = {//change
+            timeline:[trial_7H],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial7) //change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial7E = { //change
+            timeline:[trial_7E],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial7)//change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 8
+        var pre_trial8={
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>8th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,//change order
+                name:"pre_trial8", // change accordingly
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_8H = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,//change if it's easy version
+                options:["58","18","26","32","27","88","61","82","44","53"],
+                horizontal:true,
+                required:false,
+                name:"T8H_L1" //change
+            },{
+                prompt:" ",
+                options:["96","64","68","38","29","81","41","62","42","92"],
+                horizontal:true,
+                required:false,
+                name:"T8H_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var trial_8E = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                    <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                    For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["58","18","26","32","27","88","61","82","44","53"],
+                horizontal:true,
+                required:false,
+                name:"T8E_L1" //change
+            },{
+                prompt:" ",
+                options:["96","64","68","38","29","81","41","62","42","92"],
+                horizontal:true,
+                required:false,
+                name:"T8E_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial8H = {//change
+            timeline:[trial_8H],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial8) //change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial8E = { //change
+            timeline:[trial_8E],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial8)//change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 9
+        var pre_trial9={//change
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>9th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,//change order
+                name:"pre_trial9", // change accordingly
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_9H = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,//change if it's easy version
+                options:["58","27","48","14","82","79","91","18","53","91"],
+                horizontal:true,
+                required:false,
+                name:"T9H_L1" //change
+            },{
+                prompt:" ",
+                options:["24","75","67","81","54","24","64","32","15","75"],
+                horizontal:true,
+                required:false,
+                name:"T9H_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var trial_9E = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["58","27","48","14","82","79","91","18","53","91"],
+                horizontal:true,
+                required:false,
+                name:"T9E_L1" //change
+            },{
+                prompt:" ",
+                options:["24","75","67","81","54","24","64","32","15","75"],
+                horizontal:true,
+                required:false,
+                name:"T9E_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial9H = {//change
+            timeline:[trial_9H],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial9) //change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial9E = { //change
+            timeline:[trial_9E],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial9)//change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
+        //trial 10
+        var pre_trial10={//change
+            type:jsPsychSurveyMultiChoice,
+            questions:[{
+                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>The next round is the <b>10th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
+                Please choose to complete the hard version or easy version, or skip`,//change order
+                name:"pre_trial10", // change accordingly
+                options:['Hard version','Easy version','Skip'],
+                required:true
+        }],
+        };
+        var trial_10H = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
+                For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,//change if it's easy version
+                options:["38","67","58","72","56","82","34","62","66","59"],
+                horizontal:true,
+                required:false,
+                name:"T10H_L1" //change
+            },{
+                prompt:" ",
+                options:["19","75","24","92","57","44","81","73","91","75"],
+                horizontal:true,
+                required:false,
+                name:"T10H_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var trial_10E = {//change
+            type:jsPsychSurveyMultiSelect,
+            questions:[{
+                prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
+                For example, you should click on "25", because the second digit is odd (5). </p>`,
+                options:["38","67","58","72","56","82","34","62","66","59"],
+                horizontal:true,
+                required:false,
+                name:"T10E_L1" //change
+            },{
+                prompt:" ",
+                options:["19","75","24","92","57","44","81","73","91","75"],
+                horizontal:true,
+                required:false,
+                name:"T10E_L2" //change
+            }],
+            trial_duration:30000
+        };
+        var conditional_trial10H = {//change
+            timeline:[trial_10H],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial10) //change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Hard version";
+            }
+        };
+        var conditional_trial10E = { //change
+            timeline:[trial_10E],//change
+            conditional_function:function(){
+                var choice = jsPsych.data.get()
+                .select('response')
+                .values.map(r => r.pre_trial10)//change
+                .filter(v => v!== undefined)
+                .pop();
+                return choice === "Easy version";
+            }
+        };
+
          /*create timelime*/
         var timeline = [];
         timeline.push(preload);
@@ -200,8 +897,32 @@
         timeline.push(conditional_trial1H);
         timeline.push(conditional_trial1E);
         timeline.push(pre_trial2);
-        timeline.push(conditional_trial2);
-
+        timeline.push(conditional_trial2H);
+        timeline.push(conditional_trial2E);
+        timeline.push(pre_trial3);
+        timeline.push(conditional_trial3H);
+        timeline.push(conditional_trial3E);
+        timeline.push(pre_trial4);
+        timeline.push(conditional_trial4H);
+        timeline.push(conditional_trial4E);
+        timeline.push(pre_trial5);
+        timeline.push(conditional_trial5H);
+        timeline.push(conditional_trial5E);
+        timeline.push(pre_trial6);
+        timeline.push(conditional_trial6H);
+        timeline.push(conditional_trial6E);
+        timeline.push(pre_trial7);
+        timeline.push(conditional_trial7H);
+        timeline.push(conditional_trial7E);
+        timeline.push(pre_trial8);
+        timeline.push(conditional_trial8H);
+        timeline.push(conditional_trial8E);
+        timeline.push(pre_trial9);
+        timeline.push(conditional_trial9H);
+        timeline.push(conditional_trial9E);
+        timeline.push(pre_trial10);
+        timeline.push(conditional_trial10H);
+        timeline.push(conditional_trial10E);
         jsPsych.run(timeline);
     </script>
 </html>
