@@ -11,6 +11,7 @@
         <script src="jspsych/plugin-survey-text.js"></script>
         <script src="jspsych/plugin-call-function.js"></script>
         <script src="jspsych/plugin-preload.js"></script>
+        <script src="jspsych/plugin-html-keyboard-response.js"></script>
         <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
         <link href="forms/image/favicon.ico" rel="icon" type="image/x-icon"
     </head>
@@ -133,7 +134,6 @@
                 <p>We know you and your partner care about making the environment better and 
                 are willing to put in the effort to support environmental NGOs like Tree Canada. Your actions can directly contribute to this cause. 
                 It is up to you to choose a hard or easy version, and you also have the option to discontinue at any time or move to the next round. 
-                <p> When you finish, please press the button next to your computer to let your experimenter know. </p>
                 <p>If you are ready for the actual task, please fill in your participant ID and proceed to the next page.</p>
                 </div>
                 `,
@@ -149,10 +149,12 @@
         var pre_trial1={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>1st</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip.</p>`,
                 name:"pre_trial1",
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -227,10 +229,12 @@
         var pre_trial2={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>2nd</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip.</p>`,
                 name:"pre_trial2",
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -304,10 +308,12 @@
         var pre_trial3={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>3rd</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,
                 name:"pre_trial3",
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -379,13 +385,16 @@
             }
         };
 
+        // trial 4
         var pre_trial4={
             type:jsPsychSurveyMultiChoice,
              questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>4th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,
                 name:"pre_trial4",
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -457,10 +466,12 @@
         var pre_trial5={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>5th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,
                 name:"pre_trial5",
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -531,10 +542,12 @@
         var pre_trial6={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>6th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,
                 name:"pre_trial6", // change accordingly
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -605,10 +618,12 @@
         var pre_trial7={//change
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>7th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,//change order
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,//change order
                 name:"pre_trial7", // change accordingly
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -679,10 +694,12 @@
         var pre_trial8={
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>8th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,//change order
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,//change order
                 name:"pre_trial8", // change accordingly
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -753,10 +770,12 @@
         var pre_trial9={//change
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>9th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,//change order
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.
+                </p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,//change order
                 name:"pre_trial9", // change accordingly
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -827,10 +846,11 @@
         var pre_trial10={//change
             type:jsPsychSurveyMultiChoice,
             questions:[{
-                prompt:`<div style="max-width: 800px; margin: auto; text-align: left; line-height: 1.6;">
+                prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>The next round is the <b>10th</b> one. It will contain 20 numbers, and you will have 30 seconds to complete 
-                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.</p>
-                Please choose to complete the hard version or easy version, or skip`,//change order
+                if you choose the hard or easy version. You can also jump to the next round by choosing Skip.
+                If you decide to do the hard version, please do so throughly because we can only count pages that are at least 90% correct.</p>
+                <p>Please choose to complete the hard version or easy version, or skip. </p>`,//change order
                 name:"pre_trial10", // change accordingly
                 options:['Hard version','Easy version','Skip'],
                 required:true
@@ -897,6 +917,14 @@
             }
         };
 
+        var finish_page ={
+            type:jsPsychHtmlKeyboardResponse,
+            stimulus:'',
+            prompt:`<div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+            <p>Thank you very much. You have made decisions on all 10 trials. Please press the button next to your computer to let the experimenter know. </p>
+            <p>Now, please press any key on the keyboard to end this experiment. Do not leave the lab room. Please patiently wait for the experimenter. </P>`
+        };
+
          /*create timelime*/
         var timeline = [];
         timeline.push(preload);
@@ -931,6 +959,7 @@
         timeline.push(pre_trial10);
         timeline.push(conditional_trial10H);
         timeline.push(conditional_trial10E);
+        timeline.push(finish_page);
         jsPsych.run(timeline);
     </script>
 </html>
