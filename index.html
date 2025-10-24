@@ -112,31 +112,34 @@
                 {prompt: `
                 <div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You will now continue with the number-identification task for a little longer.</p>
-                <p>In this section, you and your partner will engage in a joint decision-making task. 
+                <p>In this section, you and your teammate will engage in a joint decision-making task. 
                 Very often people are faced with decisions to make that could help a given cause, 
-                but it will only be beneficial if their effort is matched by other people's effort too. 
-                Yet no one wants their effort to be wasted.</p>
-                <p>You and your partner will complete <b>10 rounds</b> of the number-identification task.
-                There will be <b>20 numbers</b> to check in each round, and you will be given <b>30 seconds</b>. Prior to each round, 
-                you and your partner can choose between two versions of the task or skip : </p>
+                but it will only be beneficial if their effort is matched by other people's effort. 
+                Yet no one wants their effort to be wasted. This task will simulate this situation. </p>
+                <p>You and your teammate will complete <b>10 rounds</b> of the number-identification task.
+                There will be <b>20 numbers</b> to check in each round, and you will be given <b>30 seconds</b> to check them. Prior to each round, 
+                you can choose between two versions of the task or skip : </p>
                 <p><b>1) Hard version</b>: Identify numbers with an even first digit and an odd second digit. <br>
                 <b>2) Easy version</b>: Identify numbers with an odd second digit. <br>
                 <b>3) Skip</b>: Be directed to start of the next round. </p>
                 <p> Your and your teammate's decisions will generate donations from the research team to <b>Tree Canada</b>.
-                Tree Canada is a national non-profit organization dedicated to planting and nurturing trees in rural and urban environments across Canada. 
-                <b>The amount of donation depends on you and your teammate's choice and effort together</b>. 
-                In every round, if you and your partner both complete the hard version and pass the 80% accuracy check, the donation will be <b>0.5 CAD</b>. 
-                If one of you completes the hard version and the other completes the easy version, the donation will be <b>0.1 CAD</b>. 
-                If neither participant completes the hard version, there will be <b>no donation</b> made. You can also refer to the picture below to learn about how the amount of donation is decided. </p>
+                Tree Canada is a national non-profit organization dedicated to planting and nurturing trees in rural and urban environments across Canada. </p>
+                <p><b>The amount of donation depends on you and your teammate's choices and effort together</b>. 
+                Every round the two of you have an opportunity to earn a certain amount of donation. In each round,
+                if you and your teammate both complete the hard version and pass the <b>80% accuracy</b> check, you can earn <b>0.5 CAD</b>. 
+                If one of you completes the hard version and the other completes the easy version or skip, you two earn <b>0.1 CAD</b>. 
+                If neither of you completes the hard version (i.e., choosing the easy version or skip), you two earn <b>no donation</b> in this round. You can also refer to the picture below to learn about how the amount of donation per round is determined. 
+                You and your teammate together can maximumly contribute 5 CAD to Tree Canada, which is equal to the cost of planting one tree. </p>
                 <div style="text-align:center;margin-top:20px;">
                     <image src="forms/image/matrix.png" style="width:450px;height=auto:">
                 </div>
-                <p>We know you and your partner care about making the environment better and 
+                <p>We know you and your teammate care about climate change and 
                 are willing to put in the effort to support environmental NGOs like Tree Canada. Your actions can directly contribute to this cause. 
                 It is up to you to choose a hard or easy version, and you also have the option to discontinue at any time or move to the next round. 
                 <p>If you are ready for the actual task, please fill in your participant ID and proceed to the next page.</p>
                 </div>
                 `,
+                name:'ID',
                 required:true}
             ],
             //ensure top of the page is visible
@@ -655,7 +658,7 @@
                 prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
                 For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,
-                options:["38","87","29","81","26","32","14","16","52", "64"],
+                options:["38","87","29","81","26","32","14","16","52","64"],
                 horizontal:true,
                 required:false,
                 name:"T7H_L1" //change
@@ -674,7 +677,7 @@
                 prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
                 For example, you should click on "25", because the second digit is odd (5). </p>`,
-                options:["38","87","29","81","26","32","14","16","52", "64"],
+                options:["38","87","29","81","26","32","14","16","52","64"],
                 horizontal:true,
                 required:false,
                 name:"T7E_L1" //change
@@ -891,13 +894,13 @@
                 prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You chose the hard version. Identify all those stimuli with an even first digit and an odd second digit. 
                 For example, you should click on "25", because the first digit (2) is even and the second digit is odd (5).</p>`,//change if it's easy version
-                options:["38","67","58","72","56","82","34","62","66","59"],
+                options:["38","67","85","72","56","82","34","62","66","49"],
                 horizontal:true,
                 required:false,
                 name:"T10H_L1" //change
             },{
                 prompt:" ",
-                options:["19","75","24","92","57","44","81","73","91","75"],
+                options:["19","75","29","92","57","44","81","73","91","85"],
                 horizontal:true,
                 required:false,
                 name:"T10H_L2" //change
@@ -910,13 +913,13 @@
                 prompt:`<div style="width: 900px; margin: auto; text-align: left; line-height: 1.6;">
                 <p>You chose the easy version. Identify all those stimuli with an odd second digit. 
                 For example, you should click on "25", because the second digit is odd (5). </p>`,
-                options:["38","67","58","72","56","82","34","62","66","59"],
+                options:["38","67","85","72","56","82","34","62","66","49"],
                 horizontal:true,
                 required:false,
                 name:"T10E_L1" //change
             },{
                 prompt:" ",
-                options:["19","75","24","92","57","44","81","73","91","75"],
+                options:["19","75","29","92","57","44","81","73","91","85"],
                 horizontal:true,
                 required:false,
                 name:"T10E_L2" //change
